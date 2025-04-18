@@ -656,8 +656,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "oklink-sdk"
-version = "0.1.0"
+name = "oklink"
+version = "0.0.1"
 dependencies = [
  "anyhow",
  "dotenv",
