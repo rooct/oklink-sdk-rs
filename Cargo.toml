@@ -1,0 +1,28 @@
+[package]
+name = "oklink-sdk-rs"
+version = "0.1.0"
+edition = "2024"
+authors = ["rooct"]
+description = "A Rust SDK for interacting with the OKLink API"
+license = "MIT"
+repository = "https://github.com/rooct/oklink-sdk-rs.git"
+homepage = "https://github.com/rooct/oklink-sdk-rs.git"
+readme = "README.md"
+keywords = ["oklink", "api", "sdk", "rust"]
+categories = ["api-bindings", "web-programming::http-client"]
+include = [
+    "**/*.rs",
+    "Cargo.toml",
+    "README.md",
+    "LICENSE",
+]
+
+[dependencies]
+anyhow = { version = "1.0.56", features = ["backtrace"] }
+reqwest = { version = "0.12.7", features = ["json"] }
+serde = { version = "1.0.137", features = ["derive"] }
+serde_json = { version = "1.0.81" }
+
+[dev-dependencies]
+tokio = { version = "1.44.2", features = ["full"] }
+dotenv = "0.15.0"
