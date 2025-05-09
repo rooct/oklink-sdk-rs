@@ -11,7 +11,7 @@ use resp::{
     AddressSummary, BalanceMulti, OkLinkBalanceDetail, OkLinkBalancePage, OkLinkResp, PublishTxInfo,
 };
 use serde_json::{Value, json};
-use types::{InscriptionOk, OkApiUri, UtxoList};
+use types::{BlockTransactionList, BlockTransactionListMulti, InscriptionOk, OkApiUri, UtxoList};
 
 /// `OkLinkClient` 是一个用于与 OkLink API 进行交互的客户端结构体。
 /// 它封装了 HTTP 请求逻辑，并提供了多种方法来查询链上数据。
@@ -299,9 +299,68 @@ impl OkLinkClient {
             .request(
                 &format!(
                     "{}?inscriptionId={}&inscriptionNumber={}",
-                    OkApiUri::BtcTransactionList.as_str(),
+                    OkApiUri::BrcTransactionList.as_str(),
                     inscription_id,
                     inscription_number
+                ),
+                Method::GET,
+                None,
+                true,
+            )
+            .await?;
+        Ok(serde_json::from_value(response)?)
+    }
+    
+    // 查询指定区块交易列表
+    // /block/transaction-list
+    pub async fn get_btc_transaction_list_oklink(
+        &self,
+        height: usize,
+        page: usize,
+        limit: usize,
+        
+    ) -> anyhow::Result<OkLinkResp<BlockTransactionList>> {
+        // chainShortName=eth&startBlockHeight=18809970&endBlockHeight=18809972&limit=1
+        let response = self
+            .client
+            .request(
+                &format!(
+                    "{}?chainShortName={}&height={}&limit={}&page={}",
+                    OkApiUri::BlockTransaction.as_str(),
+                    self.chain,
+                    height,
+                    limit,
+                    page
+                ),
+                Method::GET,
+                None,
+                true,
+            )
+            .await?;
+        println!("{}", response);
+        Ok(serde_json::from_value(response)?)
+    }
+    // 查询from,to区块交易列表
+    pub async fn get_btc_transaction_list_multi_oklink(
+        &self,
+        from_block: usize,
+        to_block: usize,
+        page: usize,
+        limit: usize,
+        
+    ) -> anyhow::Result<OkLinkResp<BlockTransactionListMulti>> {
+        // chainShortName=eth&startBlockHeight=18809970&endBlockHeight=18809972&limit=1
+        let response = self
+            .client
+            .request(
+                &format!(
+                    "{}chainShortName={}&startBlockHeight={}&endBlockHeight={}&limit={}&page={}",
+                    OkApiUri::BlockTransactionMulti.as_str(),
+                    self.chain,
+                    from_block,
+                    to_block,
+                    limit,
+                    page
                 ),
                 Method::GET,
                 None,
@@ -315,6 +374,24 @@ impl OkLinkClient {
 #[cfg(test)]
 mod testx {
     use super::*;
+
+    #[tokio::test]
+    async fn test_get_btc_transaction_list_oklink() {
+        dotenv::dotenv().ok();
+        println!("=============");
+        let api_key = std::env::var("OKLINK_API_KEY").expect("OKLINK_API_KEY must be set");
+        let client = OkLinkClient::new(
+            "https://www.oklink.com/api/v5/explorer".to_string(),
+            api_key,
+            "btc".to_string(),
+            1,
+        );
+        let resp = client
+            .get_btc_transaction_list_oklink(895910, 1, 2)
+            .await
+            .unwrap();
+        println!("{:#?}", resp.data);
+    }
 
     #[tokio::test]
     async fn test_get_btc_utxo_oklink() {
