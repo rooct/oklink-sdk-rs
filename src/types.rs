@@ -158,6 +158,47 @@ pub struct InscriptionData {
     pub  time: String,
 }
 
+// ChainInfo
+/*
+"chainFullName": "Bitcoin",
+            "chainShortName": "BTC",
+            "symbol": "BTC",
+            "rank": "1",
+            "mineable": true,
+            "algorithm": "SHA-256",
+            "consensus": "PoW",
+            "diffEstimation": "65.70T",
+            "currentDiff": "61.03T",
+            "diffAdjustTime": "1698582329000",
+            "circulatingSupply": "19517050",
+            "totalSupply": "21000000",
+            "tps": "3.16",
+            "lastHeight": "812742",
+            "lastBlockTime": "1697623175000",
+            "issueDate": "1231006505000"
+*/
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct BlockChainInfo {
+    pub chain_full_name: String,
+    pub chain_short_name: String,
+    pub symbol: String,
+    pub rank: String,
+    pub mineable: bool,
+    pub algorithm: String,
+    pub consensus: String,
+    pub diff_estimation: String,
+    pub current_diff: String,
+    pub diff_adjust_time: String,
+    pub circulating_supply: String,
+    pub total_supply: String,
+    pub tps: String,
+    pub last_height: String,
+    pub last_block_time: String,
+    pub issue_date: String,
+
+}
+
 #[derive(Debug)]
 pub enum OkApiUri {
     AddressSummary,
@@ -171,6 +212,7 @@ pub enum OkApiUri {
     TokenPriceMarketData,
     BlockTransactionMulti,
     BlockTransaction,
+    ChainInfo
 }
 
 impl OkApiUri {
@@ -187,6 +229,7 @@ impl OkApiUri {
             OkApiUri::TokenPriceMarketData => "/tokenprice/market-data",
             OkApiUri::BlockTransactionMulti => "/block/transaction-list-multi",
             OkApiUri::BlockTransaction => "/block/transaction-list",
+            OkApiUri::ChainInfo => "/blockchain/info"
         }
     }
 }
